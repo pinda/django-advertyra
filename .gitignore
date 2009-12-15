@@ -3,4 +3,6 @@ lib/*
 include/*
 src/*
 lib64
+*.pyc
 pip-log.txt
+demo.db

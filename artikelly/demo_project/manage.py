@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+import os
+import sys
+
+PROJECT_ROOT = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "apps"))
+
 from django.core.management import execute_manager
 try:
     import settings # Assumed to be in the same directory.
