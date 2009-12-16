@@ -30,4 +30,4 @@ class Article(publisa.models.Status):
     def __unicode__(self):
         return '%(title)s' % {'title': self.title}
 
-publisa.register(Article)
+publisa.register(Article, allow_banners=False)

@@ -2,6 +2,6 @@ docutils
 
 http://effbot.org/downloads/Imaging-1.1.6.tar.gz
 
--e svn+http://code.djangoproject.com/svn/django/trunk#egg=Django
+-e svn+http://code.djangoproject.com/svn/django/trunk/#egg=Django
 
--e git+git://github.com/wunki/django-publisa.git#egg=publisa
+# -e git+git://github.com/wunki/django-publisa.git#egg=publisa
