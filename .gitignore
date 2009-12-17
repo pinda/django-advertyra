@@ -6,3 +6,5 @@ lib64
 *.pyc
 pip-log.txt
 demo.db
+.Python
+.DS_STORE
