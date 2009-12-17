@@ -3,13 +3,9 @@ from django.contrib import admin
 from advertyra.models import Campaign, Advertisement, Click
 from advertyra.utils import get_placeholders
 
-class ClickInline(admin.StackedInline):
-    model = Click
-
 class AdvertisementAdmin(admin.ModelAdmin):
     list_display = ('title', )
     exclude = ('size', )
-    inlines = [ClickInline, ]
 
     def add_view(self, request, form_url='', extra_context=None):
         get_placeholders(request)

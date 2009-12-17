@@ -1,4 +1,4 @@
-import os, re
+import os, re, datetime
 
 from django.conf import settings
 from django.template import loader
@@ -44,14 +44,17 @@ def get_placeholders(request):
 
 def render_placeholder(placeholder_name, context, size, template):
     try:
-        ads = Campaign.objects.get(place__title__iexact=placeholder_name)
+        ads = Campaign.objects.get(place__title__iexact=placeholder_name,
+                                   start__gte=datetime.datetime.now(),
+                                   end__lte=datetime.datetime.now(),
+                                   ad__visible=True)
     except Campaign.DoesNotExist:
         try:
-            ad = Advertisement.objects.get(place__title__iexact=placeholder_name)
+            ad = Advertisement.objects.get(place__title__iexact=placeholder_name, visible=True)
         except Advertisement.DoesNotExist:
             return ''
         else:
-            ads = list(ad)
+            ads = [ad, ]
             
     context.update({'ads': ads,
                     'size': size })

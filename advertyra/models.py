@@ -33,7 +33,6 @@ class Advertisement(models.Model):
         return self.title
 
 class Click(models.Model):
-    ipadress = models.IPAddressField(_('ip address'))
     datetime = models.DateTimeField(_('date'), auto_now_add=True)
 
     ad = models.ForeignKey(Advertisement, related_name='ads')

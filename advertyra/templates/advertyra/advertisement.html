@@ -1,7 +1,11 @@
 <h1>Dit is de advertisement</h1>
 
 {% for ad in ads %}
+{% if ad.link %}
 <a href="{% url adclick ad.pk %}">
-  <img src="{{ ad.image }}" alt="{{ ad.title }}" />
+  <img src="{{ MEDIA_URL }}{{ ad.ad }}" alt="{{ ad.title }}" />
 </a>
+{% else %}
+  <img src="{{ MEDIA_URL }}{{ ad.ad }}" alt="{{ ad.title }}" />
+{% endif %}
 {% endfor %}
