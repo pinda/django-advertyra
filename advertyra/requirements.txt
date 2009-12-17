@@ -3,3 +3,5 @@ docutils
 http://effbot.org/downloads/Imaging-1.1.6.tar.gz
 
 -e svn+http://code.djangoproject.com/svn/django/trunk/#egg=Django
+
+-e hg+https://sorl-thumbnail.googlecode.com/hg/#egg=sorl

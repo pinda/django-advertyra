@@ -1,12 +1,19 @@
 {% load tyra_tags %}
 
-<h1>Default demo page for use of advertyra</h1>
+<h1>How to use advertyra</h1>
 
-<p>All you need is to do is</p>
+<p>Dependencies:</p>
+<ul>
+  <li>Sorl thumbnail</li>
+</ul>
+
+<p>All you need is to do is:</p>
 
 <ol>
-  <li>load tyra_tags</li>
-  <li>Insert a banner tag with a name specified</li>
+  <li>Put advertyra in your installed apps</li>
+  <li>load tyra_tags in template</li>
+  <li>Insert a banner tag with a name specified (optional size "100x100" by default, template to render ad default)</li>
 </ol>
 
-{% banner second %}
+<h3>Example</h3>
+{% banner second 300x300 %}

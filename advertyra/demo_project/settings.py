@@ -56,4 +56,5 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.comments',
     'advertyra',
+    'sorl.thumbnail',
 )
