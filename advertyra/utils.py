@@ -4,7 +4,7 @@ from django.conf import settings
 from django.template import loader
 from django.template.context import RequestContext
 
-from advertyra.models import Placeholder
+from advertyra.models import Campaign, Advertisement, Placeholder
 
 PLACEHOLDERS = []
 
@@ -42,5 +42,24 @@ def get_placeholders(request):
     for placeholder in removable:
         Placeholder.objects.get(title__iexact=placeholder).delete()
 
-def render_placeholder(placeholder_name, template=None):
-    pass
+def render_placeholder(placeholder_name, context, size, template):
+    try:
+        ads = Campaign.objects.get(place__title__iexact=placeholder_name)
+    except Campaign.DoesNotExist:
+        try:
+            ad = Advertisement.objects.get(place__title__iexact=placeholder_name)
+        except Advertisement.DoesNotExist:
+            return ''
+        else:
+            ads = list(ad)
+            
+    context.update({'ads': ads,
+                    'size': size })
+    
+    template = loader.get_template(template)
+    template = template.render(context)
+
+    return template
+    
+
+    

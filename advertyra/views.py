@@ -1,1 +1,3 @@
-# Create your views here.
+
+def adclick(request, ad_id):
+    pass

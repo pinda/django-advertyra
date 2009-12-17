@@ -1,0 +1,7 @@
+<h1>Dit is de advertisement</h1>
+
+{% for ad in ads %}
+<a href="{% url adclick ad.pk %}">
+  <img src="{{ ad.image }}" alt="{{ ad.title }}" />
+</a>
+{% endfor %}

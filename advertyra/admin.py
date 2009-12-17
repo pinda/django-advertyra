@@ -8,6 +8,7 @@ class ClickInline(admin.StackedInline):
 
 class AdvertisementAdmin(admin.ModelAdmin):
     list_display = ('title', )
+    exclude = ('size', )
     inlines = [ClickInline, ]
 
     def add_view(self, request, form_url='', extra_context=None):
