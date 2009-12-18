@@ -22,10 +22,12 @@ class AdvertisementAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, extra_context=None):
         get_placeholders(request)
 
+        # Determine start and end date
         start_date = datetime.datetime.now().date().replace(day=1)
         end_date = start_date + datetime.timedelta(days=31)
         end_date.replace(day=1)
-        
+
+        # select clicks for this ad grouped by day
         select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
         clicks = Click.objects.filter(ad__pk=object_id,
                                       datetime__gte=start_date,
@@ -35,9 +37,10 @@ class AdvertisementAdmin(admin.ModelAdmin):
             date = datetime.datetime.strptime(x['d'], '%m/%d/%Y')
             x['d'] = calendar.timegm(date.timetuple()) * 1000
 
+        month_list = Click.objects.dates('datetime', 'month')
         clicks = [[x['d'], x['pk__count']] for x in clicks]
         
-        extra_context = {'clicks': clicks, 'start_date': start_date, 'end_date': end_date }
+        extra_context = {'clicks': clicks, 'start_date': start_date, 'end_date': end_date, 'month_list': month_list }
 
         return super(AdvertisementAdmin, self).change_view(request, object_id, extra_context)
 

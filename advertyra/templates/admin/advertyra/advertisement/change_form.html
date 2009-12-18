@@ -55,6 +55,28 @@ $(document).ready(function () {
     };
     
     var plot = $.plot($("#placeholder"), [d], options);
+
+    $('select#months').change(function(){
+        var url = $(this).attr("rel").replace('0', $(this).val());
+        $.getJSON(url, function(data){
+            var d = data.clicks;
+    
+            for (var i = 0; i < d.length; ++i)
+              d[i][0] += 60 * 60 * 1000;
+
+            var options = {
+                  xaxis: { mode: "time",
+                  min: (new Date(data.start_date)).getTime(),
+                  max: (new Date(data.end_date)).getTime(),
+                },
+                grid: { markings: weekendAreas },
+                lines: { show: true },
+                points: { show: true }
+            };
+            $('#placeholder').empty();
+            var plot = $.plot($("#placeholder"), [d], options);
+        });
+    });
     
 });
 </script>
@@ -65,8 +87,14 @@ $(document).ready(function () {
     <form id="advertisement-form">
       <fieldset class="module aligned">
       <div class="form-row title">
-        <h1>{% trans 'Clicks for' %} {{ start_date|date:"F Y" }}</h1>
-        
+        <h1>{% trans 'Clicks for' %}
+        <select id="months" rel="{% url ad_click_by_month object_id 0 %}">
+          {% for month in month_list %}
+          <option value="01-2010">January 2010</option>
+          <option value="{{ month|date:'m-Y' }}">{{ month|date:'F Y' }}</option>
+          {% endfor %}
+        </select>
+        </h1>
         <div id="placeholder" style="width:600px;height:300px;"></div>
       </div>
       </fieldset>
