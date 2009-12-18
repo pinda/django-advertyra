@@ -1,4 +1,7 @@
+import datetime, calendar
 from django.contrib import admin
+from django.shortcuts import get_object_or_404
+from django.db.models import Count
 
 from advertyra.models import Campaign, Advertisement, Click
 from advertyra.utils import get_placeholders
@@ -18,6 +21,23 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, extra_context=None):
         get_placeholders(request)
+
+        start_date = datetime.datetime.now().date().replace(day=1)
+        end_date = start_date + datetime.timedelta(days=31)
+        end_date.replace(day=1)
+        
+        select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
+        clicks = Click.objects.filter(ad__pk=object_id,
+                                      datetime__gte=start_date,
+                                      datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
+
+        for x in clicks:
+            date = datetime.datetime.strptime(x['d'], '%m/%d/%Y')
+            x['d'] = calendar.timegm(date.timetuple()) * 1000
+
+        clicks = [[x['d'], x['pk__count']] for x in clicks]
+        
+        extra_context = {'clicks': clicks, 'start_date': start_date, 'end_date': end_date }
 
         return super(AdvertisementAdmin, self).change_view(request, object_id, extra_context)
 

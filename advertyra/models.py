@@ -35,7 +35,7 @@ class Advertisement(models.Model):
 class Click(models.Model):
     datetime = models.DateTimeField(_('date'), auto_now_add=True)
 
-    ad = models.ForeignKey(Advertisement, related_name='ads')
+    ad = models.ForeignKey(Advertisement, related_name='clicks')
 
     def __unicode__(self):
         return self.ad
