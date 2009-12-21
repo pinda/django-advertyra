@@ -24,11 +24,13 @@ class AdvertisementForm(forms.ModelForm):
     model = Advertisement
 
     def clean_place(self):
-        placeholder_taken(self.cleaned_data['place'])
+        if self.cleaned_data['place']:
+            return placeholder_taken(self.cleaned_data['place'])
 
 class CampaignForm(forms.ModelForm):
     model = Campaign
 
     def clean_place(self):
-        placeholder_taken(self.cleaned_data['place'])
+        if self.cleaned_data['place']:
+            return placeholder_taken(self.cleaned_data['place'])
                                                

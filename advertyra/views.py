@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 
-from advertyra.models import Advertisement, Click
+from advertyra.models import Advertisement, Campaign, Click
+from advertyra.utils import clicks_for_ad
 
 def adclick(request, ad_id):
     ad = get_object_or_404(Advertisement, pk=ad_id, visible=True)
@@ -30,27 +31,36 @@ def user_is_staff(user):
 def ad_click_by_month(request, ad_id, date):
     date = datetime.datetime.strptime(date, '%m-%Y')
 
-    start_date = date.replace(day=1)
-    end_date = start_date + datetime.timedelta(days=31)
-    end_date.replace(day=1)
+    click_data = clicks_for_ad(ad_id, date)
 
-    # select clicks for this ad grouped by day
-    select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
-    clicks = Click.objects.filter(ad__pk=ad_id,
-                                  datetime__gte=start_date,
-                                  datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
-
-    for x in clicks:
-        date = datetime.datetime.strptime(x['d'], '%m/%d/%Y')
-        x['d'] = calendar.timegm(date.timetuple()) * 1000
-
-    month_list = Click.objects.dates('datetime', 'month')
-    clicks = [[x['d'], x['pk__count']] for x in clicks]
-
-    data = {'clicks': clicks,
-            'start_date': start_date.strftime('%Y/%m/%d'),
-            'end_date': end_date.strftime('%Y/%m/%d') }
+    data = {'clicks': click_data['clicks'],
+            'start_date': click_data['start'].strftime('%Y/%m/%d'),
+            'end_date': click_data['end'].strftime('%Y/%m/%d') }
     
     return HttpResponse(simplejson.dumps(data),
                         mimetype='application/json')
 
+@user_passes_test(user_is_staff)
+def campaign_click_by_month(request, campaign_id, date):
+    date = datetime.datetime.strptime(date, '%m-%Y')
+    
+    campaign = Campaign.objects.get(pk=campaign_id)
+    
+    campaign_data = {}
+    for ad in campaign.ad.all():
+        ad_data = {}
+        clicks = clicks_for_ad(ad.pk)
+        ad_data['data'] = clicks['clicks']
+        ad_data['label'] = ad.title
+
+        start_date = date.replace(day=1)
+        end_date = start_date + datetime.timedelta(days=31)
+        end_date.replace(day=1)
+
+        ad_data['start'] = start_date.strftime('%Y/%m/%d')
+        ad_data['end'] = end_date.strftime('%Y/%m/%d')
+
+        campaign_data[ad.title] = ad_data
+
+    return HttpResponse(simplejson.dumps(campaign_data),
+                        mimetype='application/json')

@@ -1,10 +1,11 @@
-import os, re, datetime
+import os, re, datetime, calendar, itertools
 
 from django.conf import settings
+from django.db.models import Count
 from django.template import loader
 from django.template.context import RequestContext
 
-from advertyra.models import Campaign, Advertisement, Placeholder
+from advertyra.models import Campaign, Advertisement, Placeholder, Click
 
 PLACEHOLDERS = []
 
@@ -44,10 +45,11 @@ def get_placeholders(request):
 
 def render_placeholder(placeholder_name, context, size, template):
     try:
-        ads = Campaign.objects.get(place__title__iexact=placeholder_name,
-                                   start__gte=datetime.datetime.now(),
-                                   end__lte=datetime.datetime.now(),
-                                   ad__visible=True)
+        campaign = Campaign.objects.get(place__title__iexact=placeholder_name,
+                                   start__lte=datetime.datetime.now(),
+                                   end__gte=datetime.datetime.now(),
+                                   )
+        ads = campaign.ad.all()
     except Campaign.DoesNotExist:
         try:
             ad = Advertisement.objects.get(place__title__iexact=placeholder_name, visible=True)
@@ -63,6 +65,59 @@ def render_placeholder(placeholder_name, context, size, template):
     template = template.render(context)
 
     return template
+
+def mktimetuple(day, date):
+    date = datetime.date(date.year, date.month, day)
+    return calendar.timegm(date.timetuple()) * 1000
+
+def click_count(value):
+    if not value == 0:
+        return value['pk__count']
+    else:
+        return value
+
+def clicks_for_ad(pk, start_date=datetime.datetime.now()):
+    """
+    Return all the clicks for this ad by month
+    Returns click count, start and end date
+    """
+    # Determine start and end date
+    start_date = start_date.date().replace(day=1)
+    end_date = start_date + datetime.timedelta(days=31)
+    end_date.replace(day=1)
+
+    # select clicks for this ad grouped by day
+    select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
+    clicks = Click.objects.filter(ad__pk=pk,
+                                  datetime__gte=start_date,
+                                  datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
+
+    c = calendar.Calendar(calendar.SUNDAY)
+
+    # Get clicks on day
+    by_day = dict([
+            (dom, list(items)[0])
+            for dom, items in itertools.groupby(clicks, lambda c: c['d'].split('/')[1])
+            ])
+
+    # Get all the days in the month
+    days = dict([[day, by_day.get(str(day), 0)] for day in c.itermonthdays(start_date.year, start_date.month)
+                 if day != 0
+                 and day <= datetime.datetime.now().day
+                 and start_date.month == datetime.datetime.now().month
+                 ])
+
+    # match all the days with the click value
+    clicks = [[mktimetuple(day[0], start_date), click_count(day[1])] for day in days.items()]
+
+    click_data = {}
+    click_data['clicks'] = clicks
+    click_data['start'] = start_date
+    click_data['end'] = end_date
+    
+    return click_data
+
+
 
     
 

@@ -10,5 +10,9 @@ urlpatterns = patterns('',
    url(r'click/(?P<ad_id>\d+)/(?P<date>[-\w]+)/ajax/$',
        tyra_views.ad_click_by_month,
        name='ad_click_by_month'),
+
+   url(r'campaign/(?P<campaign_id>\d+)/(?P<date>[-\w]+)/ajax/$',
+       tyra_views.campaign_click_by_month,
+       name='campaign_click_by_month'),                       
 )                      
     
