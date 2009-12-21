@@ -63,6 +63,7 @@ def render_placeholder(placeholder_name, context, size, template):
     template = template.render(context)
 
     return template
+
     
 
     

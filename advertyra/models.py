@@ -1,10 +1,11 @@
+import datetime
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
 class Campaign(models.Model):
     title = models.CharField(_('title'), max_length=80)
-    start = models.DateTimeField(_('start time'))
+    start = models.DateTimeField(_('start time'), default=datetime.datetime.now())
     end = models.DateTimeField(_('end time'))
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)

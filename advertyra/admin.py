@@ -1,14 +1,27 @@
-import datetime, calendar
+import datetime, calendar, itertools
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
 
 from advertyra.models import Campaign, Advertisement, Click
+from advertyra.forms import AdvertisementForm, CampaignForm
 from advertyra.utils import get_placeholders
 
+def mktimetuple(day, date):
+    date = datetime.date(date.year, date.month, day)
+    return calendar.timegm(date.timetuple()) * 1000
+
+def click_count(value):
+    if not value == 0:
+        return value['pk__count']
+    else:
+        return value
+
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('title', )
+    list_display = ('title', 'place', 'visible' )
+    list_filter = ('visible', )
     exclude = ('size', )
+    form = AdvertisementForm
 
     class Media:
         js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
@@ -33,20 +46,32 @@ class AdvertisementAdmin(admin.ModelAdmin):
                                       datetime__gte=start_date,
                                       datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
 
-        for x in clicks:
-            date = datetime.datetime.strptime(x['d'], '%m/%d/%Y')
-            x['d'] = calendar.timegm(date.timetuple()) * 1000
+        c = calendar.Calendar(calendar.SUNDAY)
+
+        by_day = dict([
+                (dom, list(items)[0])
+                for dom, items in itertools.groupby(clicks, lambda c: c['d'].split('/')[1])
+        ])
+
+        days = dict([[day, by_day.get(str(day), 0)] for day in c.itermonthdays(start_date.year, start_date.month)
+                     if day != 0
+                     and day <= datetime.datetime.now().day
+                     and start_date.month == datetime.datetime.now().month
+                     ])
+        
+        clicks = [[mktimetuple(day[0], start_date), click_count(day[1])] for day in days.items()]
 
         month_list = Click.objects.dates('datetime', 'month')
-        clicks = [[x['d'], x['pk__count']] for x in clicks]
-        
+
         extra_context = {'clicks': clicks, 'start_date': start_date, 'end_date': end_date, 'month_list': month_list }
 
         return super(AdvertisementAdmin, self).change_view(request, object_id, extra_context)
 
 class CampaignAdmin(admin.ModelAdmin):
-    list_display = ('title', )
-
+    list_display = ('title', 'start', 'end')
+    list_filter = ('ad', )
+    form = CampaignForm
+    
     def add_view(self, request, form_url='', extra_context=None):
         get_placeholders(request)
 

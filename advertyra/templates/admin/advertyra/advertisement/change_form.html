@@ -81,7 +81,9 @@ $(document).ready(function () {
 });
 </script>
 {% endblock %}
+
 {% block footer %}
+{% if object_id %}
 <div id="content" class="coIM">
   <div id="content-main">
     <form id="advertisement-form">
@@ -90,7 +92,6 @@ $(document).ready(function () {
         <h1>{% trans 'Clicks for' %}
         <select id="months" rel="{% url ad_click_by_month object_id 0 %}">
           {% for month in month_list %}
-          <option value="01-2010">January 2010</option>
           <option value="{{ month|date:'m-Y' }}">{{ month|date:'F Y' }}</option>
           {% endfor %}
         </select>
@@ -101,4 +102,5 @@ $(document).ready(function () {
     </form>
   </div>
 </div>
+{% endif %}
 {% endblock %}
