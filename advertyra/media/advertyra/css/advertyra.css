@@ -1,0 +1,15 @@
+#placeholder {
+    float: left;
+    width: 600px;
+    height: 300px;
+    margin-right: 10px;
+}
+
+#choices {
+    float: left;
+    margin: 10px 0 0 0;
+}
+
+#choices li {
+    list-style-type: none;
+}

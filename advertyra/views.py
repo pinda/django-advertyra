@@ -49,7 +49,7 @@ def campaign_click_by_month(request, campaign_id, date):
     campaign_data = {}
     for ad in campaign.ad.all():
         ad_data = {}
-        clicks = clicks_for_ad(ad.pk)
+        clicks = clicks_for_ad(ad.pk, date)
         ad_data['data'] = clicks['clicks']
         ad_data['label'] = ad.title
 

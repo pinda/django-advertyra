@@ -7,64 +7,28 @@
 $(document).ready(function () {
 
     var d = {{ clicks }};
-
-    // first correct the timestamps - they are recorded as the daily
-    // midnights in UTC+0100, but Flot always displays dates in UTC
-    // so we have to add one hour to hit the midnights in the plot
-    for (var i = 0; i < d.length; ++i)
-      d[i][0] += 60 * 60 * 1000;
-
-    // helper for returning the weekends in a period
-    function weekendAreas(axes) {
-        var markings = [];
-        var d = new Date(axes.xaxis.min);
-        // go to the first Saturday
-        d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
-        d.setUTCSeconds(0);
-        d.setUTCMinutes(0);
-        d.setUTCHours(0);
-        var i = d.getTime();
-        do {
-            // when we don't set yaxis, the rectangle automatically
-            // extends to infinity upwards and downwards
-            markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
-            i += 7 * 24 * 60 * 60 * 1000;
-        } while (i < axes.xaxis.max);
-
-        return markings;
-    }
     
-    var options = {
-        xaxis: { mode: "time",
-        min: (new Date("{{ start_date|date:'Y/m/d' }}")).getTime(),
-        max: (new Date("{{ end_date|date:'Y/m/d' }}")).getTime(),
+    var extras = {
+        xaxis: {
+           min: (new Date("{{ start_date|date:'Y/m/d' }}")).getTime(),
+           max: (new Date("{{ end_date|date:'Y/m/d' }}")).getTime(),
         },
-        grid: { markings: weekendAreas },
-        lines: { show: true },
-        points: { show: true }
     };
     
-    var plot = $.plot($("#placeholder"), [d], options);
+    plotSingle(d, extras);
 
     $('select#months').change(function(){
         var url = $(this).attr("rel").replace('0', $(this).val());
         $.getJSON(url, function(data){
             var d = data.clicks;
-    
-            for (var i = 0; i < d.length; ++i)
-              d[i][0] += 60 * 60 * 1000;
-
-            var options = {
-                  xaxis: { mode: "time",
+            var extras = {
+                  xaxis: { 
                   min: (new Date(data.start_date)).getTime(),
                   max: (new Date(data.end_date)).getTime(),
                 },
-                grid: { markings: weekendAreas },
-                lines: { show: true },
-                points: { show: true }
             };
-            $('#placeholder').empty();
-            var plot = $.plot($("#placeholder"), [d], options);
+            plotSingle(d, extras);
+
         });
     });
     
@@ -83,10 +47,12 @@ $(document).ready(function () {
         <select id="months" rel="{% url ad_click_by_month object_id 0 %}">
           {% for month in month_list %}
           <option value="{{ month|date:'m-Y' }}">{{ month|date:'F Y' }}</option>
+          {% empty %}
+          <option value="">{{ start_date|date:'F Y' }}</option>
           {% endfor %}
         </select>
         </h1>
-        <div id="placeholder" style="width:600px;height:300px;"></div>
+        <div id="placeholder"></div>
       </div>
       </fieldset>
     </form>

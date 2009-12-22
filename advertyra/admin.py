@@ -14,7 +14,10 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
-              'advertyra/js/jquery.flot.min.js')
+              'advertyra/js/jquery.flot.min.js',
+              'advertyra/js/advertyra.plot.js')
+        
+        css = {'all': ('advertyra/css/advertyra.css',) }
 
     def add_view(self, request, form_url='', extra_context=None):
         get_placeholders(request)
@@ -39,7 +42,10 @@ class CampaignAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
-              'advertyra/js/jquery.flot.min.js')
+              'advertyra/js/jquery.flot.min.js',
+              'advertyra/js/advertyra.plot.js')
+
+        css = {'all': ('advertyra/css/advertyra.css',) }
     
     def add_view(self, request, form_url='', extra_context=None):
         get_placeholders(request)
@@ -65,6 +71,5 @@ class CampaignAdmin(admin.ModelAdmin):
 
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Campaign, CampaignAdmin)
-    
 
     
