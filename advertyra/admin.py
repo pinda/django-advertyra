@@ -36,8 +36,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
         return super(AdvertisementAdmin, self).change_view(request, object_id, extra_context)
 
 class CampaignAdmin(admin.ModelAdmin):
-    list_display = ('title', 'start', 'end')
-    list_filter = ('ad', )
+    list_display = ('title', 'place', 'start', 'end')
+    list_filter = ('ad', 'start')
     form = CampaignForm
 
     class Media:
