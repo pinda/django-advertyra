@@ -24,7 +24,10 @@ class AdvertisementForm(forms.ModelForm):
     model = Advertisement
 
     def clean_place(self):
-        current_ad = Advertisement.objects.get(title__iexact=self.cleaned_data['title'])
+        try:
+            current_ad = Advertisement.objects.get(title__iexact=self.cleaned_data['title'])
+        except Advertisement.DoesNotExist:
+            return self.cleaned_data['place']
         
         if self.cleaned_data['place']:
             return placeholder_taken(self.cleaned_data['place'], ad_pk=current_ad.pk)
@@ -33,7 +36,10 @@ class CampaignForm(forms.ModelForm):
     model = Campaign
 
     def clean_place(self):
-        current_cam = Campaign.objects.get(title__iexact=self.cleaned_data['title'])
+        try:
+            current_cam = Campaign.objects.get(title__iexact=self.cleaned_data['title'])
+        except Campaign.DoesNotExist:
+            return self.cleaned_data['place']
         
         if self.cleaned_data['place']:
             return placeholder_taken(self.cleaned_data['place'], current_cam.pk)

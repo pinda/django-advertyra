@@ -24,20 +24,22 @@ def get_placeholders(request):
     current_placeholders = [(p.title) for p in Placeholder.objects.all()]
 
     # For every template retrieve the placeholders and add to the DB
+    all_positions = []
     for template in placeholders:
         temp = loader.get_template(template)
         temp_string = temp.render(context)
 
-        placeholders = re.findall("<!-- Banner: (.+?) -->", temp_string)
-        
-        for placeholder in placeholders:
+        positions = re.findall("<!-- Banner: (.+?) -->", temp_string)
+
+        for position in positions:
+            all_positions.append(position)
             try:
-                Placeholder.objects.get(title__iexact=placeholder)
+                Placeholder.objects.get(title__iexact=position)
             except Placeholder.DoesNotExist:
-                Placeholder.objects.create(title=placeholder)
+                Placeholder.objects.create(title=position)
 
     # Delete any non-existing placeholder
-    removable = list(set(current_placeholders).difference(set(placeholders)))
+    removable = list(set(current_placeholders).difference(set(all_positions)))
 
     for placeholder in removable:
         Placeholder.objects.get(title__iexact=placeholder).delete()
