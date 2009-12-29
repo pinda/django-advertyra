@@ -1,7 +1,7 @@
 import os, re, datetime, calendar, itertools
 
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.template import loader
 from django.template.context import RequestContext
 
@@ -46,10 +46,10 @@ def get_placeholders(request):
 
 def render_placeholder(placeholder_name, context, size, template):
     try:
-        campaign = Campaign.objects.get(place__title__iexact=placeholder_name,
-                                   start__lte=datetime.datetime.now(),
-                                   end__gte=datetime.datetime.now(),
-                                   )
+        campaign = Campaign.objects.get(Q(place__title__iexact=placeholder_name,
+                                        start__lte=datetime.datetime.now()),
+                                        Q(end__gte=datetime.datetime.now())| Q(end=None)
+                                        )
         ads = campaign.ad.all()
     except Campaign.DoesNotExist:
         try:

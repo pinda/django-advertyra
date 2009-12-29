@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class Campaign(models.Model):
     title = models.CharField(_('title'), max_length=80)
     start = models.DateTimeField(_('start time'), default=datetime.datetime.now())
-    end = models.DateTimeField(_('end time'))
+    end = models.DateTimeField(_('end time'), blank=True, null=True)
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)
     ad = models.ManyToManyField("Advertisement")
