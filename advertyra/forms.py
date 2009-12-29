@@ -18,16 +18,20 @@ def get_free_places():
     places = Placeholder.objects.exclude(id__in=taken_places)
 
     if places:
-        free_places = ((ad.pk, ad.title) for ad in Placeholder.objects.exclude(id__in=taken_places))
+        free_places = [[ad.pk, ad.title] for ad in Placeholder.objects.exclude(id__in=taken_places)]
         return free_places
     else:
         return (('0', _('No places available')),)
 
 class AdvertisementForm(forms.ModelForm):
-    place = forms.ChoiceField(choices=get_free_places())
+    place = forms.ChoiceField()
     
     model = Advertisement
 
+    def __init__(self, *args, **kwargs):
+        super(AdvertisementForm, self).__init__(*args, **kwargs)
+        self.fields['place'].choices = get_free_places()
+    
     def clean_place(self):
         if self.cleaned_data['place'] == "0":
             raise forms.ValidationError(_('There are no free places, create one first'))
@@ -35,9 +39,13 @@ class AdvertisementForm(forms.ModelForm):
 
 
 class CampaignForm(forms.ModelForm):
-    place = forms.ChoiceField(choices=get_free_places())
+    place = forms.ChoiceField()
     
     model = Campaign
+
+    def __init__(self, *args, **kwargs):
+        super(CampaignForm, self).__init__(*args, **kwargs)
+        self.fields['place'].choices = get_free_places()
 
     def clean_place(self):
         if self.cleaned_data['place'] == "0":
