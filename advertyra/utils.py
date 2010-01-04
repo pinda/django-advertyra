@@ -26,17 +26,17 @@ def get_placeholders(request):
     # For every template retrieve the placeholders and add to the DB
     all_positions = []
     for template in placeholders:
-        temp = loader.get_template(template)
-        temp_string = temp.render(context)
+        file = open(template, 'r')
+        temp_string = file.read()
+        banner_re = r'{% banner (?P<title>[-\w]+).*%}'
 
-        positions = re.findall("<!-- Banner: (.+?) -->", temp_string)
-
-        for position in positions:
-            all_positions.append(position)
+        for match in re.finditer(banner_re, temp_string):
+            title = match.group('title')
+            all_positions.append(title)
             try:
-                Placeholder.objects.get(title__iexact=position)
+                Placeholder.objects.get(title__iexact=title)
             except Placeholder.DoesNotExist:
-                Placeholder.objects.create(title=position)
+                Placeholder.objects.create(title=title)
 
     # Delete any non-existing placeholder
     removable = list(set(current_placeholders).difference(set(all_positions)))
@@ -58,10 +58,10 @@ def render_placeholder(placeholder_name, context, size, template):
             return ''
         else:
             ads = [ad, ]
-            
+
     context.update({'ads': ads,
                     'size': size })
-    
+
     template = loader.get_template(template)
     template = template.render(context)
 
@@ -115,11 +115,11 @@ def clicks_for_ad(pk, start_date=datetime.datetime.now()):
     click_data['clicks'] = clicks
     click_data['start'] = start_date
     click_data['end'] = end_date
-    
+
     return click_data
 
 
 
-    
 
-    
+
+
