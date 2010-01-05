@@ -22,11 +22,11 @@ class Campaign(models.Model):
 class Advertisement(models.Model):
     title = models.CharField(_('title'), max_length=80)
     link = models.URLField(_('link'), blank=True, null=True)
-    ad = models.ImageField(_('advertisement'), upload_to='advertyra/advertisements/')
+    ad = models.ImageField(_('advertisement'), upload_to='advertisements/')
     visible = models.BooleanField(_('visible'), default=True)
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)
-    
+
     class Meta:
         verbose_name = _('Advertisement')
         verbose_name_plural = _('Advertisements')
@@ -40,7 +40,7 @@ class Click(models.Model):
     ad = models.ForeignKey(Advertisement, related_name='clicks')
 
     def __unicode__(self):
-        return self.ad
+        return '%s' % self.ad.title
 
 class Placeholder(models.Model):
     title = models.CharField(_('title'), max_length=80)
@@ -49,4 +49,4 @@ class Placeholder(models.Model):
         return self.title
 
 
-    
+

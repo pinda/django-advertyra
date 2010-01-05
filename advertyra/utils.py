@@ -117,9 +117,3 @@ def clicks_for_ad(pk, start_date=datetime.datetime.now()):
     click_data['end'] = end_date
 
     return click_data
-
-
-
-
-
-

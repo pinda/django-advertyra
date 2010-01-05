@@ -12,13 +12,14 @@ def adclick(request, ad_id):
     ad = get_object_or_404(Advertisement, pk=ad_id, visible=True)
 
     if ad.pk not in request.COOKIES:
-        Click.objects.create(ad=ad)
+        Click.objects.create(ad=ad,
+                             datetime=datetime.datetime.now())
 
         # Set a cookie
         response = HttpResponse()
         expires = datetime.datetime.strftime(datetime.datetime.utcnow().replace(hour=0, minute=0, second=0) + datetime.timedelta(days=1), "%a, %d-%b-%Y %H:%M:%S GMT")
         response.set_cookie(str(ad.pk), 'clicked', expires=expires)
-        
+
     print Click.objects.all().count()
 
     return HttpResponseRedirect(ad.link)
@@ -36,16 +37,16 @@ def ad_click_by_month(request, ad_id, date):
     data = {'clicks': click_data['clicks'],
             'start_date': click_data['start'].strftime('%Y/%m/%d'),
             'end_date': click_data['end'].strftime('%Y/%m/%d') }
-    
+
     return HttpResponse(simplejson.dumps(data),
                         mimetype='application/json')
 
 @user_passes_test(user_is_staff)
 def campaign_click_by_month(request, campaign_id, date):
     date = datetime.datetime.strptime(date, '%m-%Y')
-    
+
     campaign = Campaign.objects.get(pk=campaign_id)
-    
+
     campaign_data = {}
     for ad in campaign.ad.all():
         ad_data = {}
