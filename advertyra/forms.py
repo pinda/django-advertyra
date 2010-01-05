@@ -29,7 +29,13 @@ class AdvertisementForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AdvertisementForm, self).__init__(*args, **kwargs)
-        self.fields['place'].choices = get_free_places()
+
+        place_list = get_free_places()
+        if self.instance.place:
+            place_list.append([self.instance.place.pk, self.instance.place.title])
+            place_list.sort()
+            
+        self.fields['place'].choices = place_list
     
     def clean_place(self):
         if not self.cleaned_data['place']:
@@ -44,7 +50,13 @@ class CampaignForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampaignForm, self).__init__(*args, **kwargs)
-        self.fields['place'].choices = get_free_places()
+
+        place_list = get_free_places()
+        if self.instance.place:
+            place_list.append([self.instance.place.pk, self.instance.place.title])
+            place_list.sort()
+            
+        self.fields['place'].choices = place_list
 
     def clean_place(self):
         if not self.cleaned_data['place']:
