@@ -20,8 +20,6 @@ def adclick(request, ad_id):
         expires = datetime.datetime.strftime(datetime.datetime.utcnow().replace(hour=0, minute=0, second=0) + datetime.timedelta(days=1), "%a, %d-%b-%Y %H:%M:%S GMT")
         response.set_cookie(str(ad.pk), 'clicked', expires=expires)
 
-    print Click.objects.all().count()
-
     return HttpResponseRedirect(ad.link)
 
 def user_is_staff(user):

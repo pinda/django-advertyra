@@ -98,7 +98,7 @@ def clicks_for_ad(pk, start_date=datetime.datetime.now()):
     # Get clicks on day
     by_day = dict([
             (dom, list(items)[0])
-            for dom, items in itertools.groupby(clicks, lambda c: c['d'].split('/')[1])
+            for dom, items in itertools.groupby(clicks, lambda c: c['d'].split('/')[1].strip('0'))
             ])
 
     # Get all the days in the month
