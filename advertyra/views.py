@@ -4,23 +4,24 @@ from django.db.models import Count
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.hashcompat import md5_constructor
 
 from advertyra.models import Advertisement, Campaign, Click
 from advertyra.utils import clicks_for_ad
 
 def adclick(request, ad_id):
     ad = get_object_or_404(Advertisement, pk=ad_id, visible=True)
+    response = HttpResponseRedirect(ad.link)
+    key = md5_constructor(str(ad.pk) + ad.title).hexdigest()
 
-    if ad.pk not in request.COOKIES:
-        Click.objects.create(ad=ad,
-                             datetime=datetime.datetime.now())
+    if key not in request.COOKIES:
+        Click.objects.create(ad=ad)
 
         # Set a cookie
-        response = HttpResponse()
         expires = datetime.datetime.strftime(datetime.datetime.utcnow().replace(hour=0, minute=0, second=0) + datetime.timedelta(days=1), "%a, %d-%b-%Y %H:%M:%S GMT")
-        response.set_cookie(str(ad.pk), 'clicked', expires=expires)
+        response.set_cookie(key, 'clicked', expires=expires)
 
-    return HttpResponseRedirect(ad.link)
+    return response
 
 def user_is_staff(user):
     """ Check if a user has the staff status """
