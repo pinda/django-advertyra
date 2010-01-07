@@ -22,7 +22,7 @@ class Campaign(models.Model):
 class Advertisement(models.Model):
     title = models.CharField(_('title'), max_length=80)
     link = models.URLField(_('link'), blank=True, null=True)
-    ad = models.ImageField(_('advertisement'), upload_to='advertisements/')
+    ad = models.ImageField(_('advertisement'), upload_to='tyra/')
     visible = models.BooleanField(_('visible'), default=True)
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)
