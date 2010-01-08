@@ -69,7 +69,7 @@ def render_placeholder(placeholder_name, context, size, template):
 
 def mktimetuple(day, date):
     date = datetime.date(date.year, date.month, day)
-    return int(calendar.timegm(date.timetuple()) * 1000)
+    return float(calendar.timegm(date.timetuple()) * 1000)
 
 def click_count(value):
     if not value == 0:
