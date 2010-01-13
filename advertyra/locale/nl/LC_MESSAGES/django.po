@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-13 15:07+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-01-13 15:09+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,53 +18,53 @@ msgstr ""
 
 #: forms.py:21
 msgid "No place"
-msgstr ""
+msgstr "Geen plaats"
 
 #: models.py:8 models.py:23 models.py:46
 msgid "title"
-msgstr ""
+msgstr "titel"
 
 #: models.py:9
 msgid "start time"
-msgstr ""
+msgstr "start tijd"
 
 #: models.py:10
 msgid "end time"
-msgstr ""
+msgstr "eind tijd"
 
 #: models.py:16
 msgid "Campaign"
-msgstr ""
+msgstr "Campagne"
 
 #: models.py:17
 msgid "Campaigns"
-msgstr ""
+msgstr "Campagnes"
 
 #: models.py:24
 msgid "link"
-msgstr ""
+msgstr "link"
 
 #: models.py:25
 msgid "advertisement"
-msgstr ""
+msgstr "advertentie"
 
 #: models.py:26
 msgid "visible"
-msgstr ""
+msgstr "zichtbaar"
 
 #: models.py:31
 msgid "Advertisement"
-msgstr ""
+msgstr "Advertentie"
 
 #: models.py:32
 msgid "Advertisements"
-msgstr ""
+msgstr "Advertenties"
 
 #: models.py:38
 msgid "date"
-msgstr ""
+msgstr "datum"
 
 #: templates/admin/advertyra/advertisement/change_form.html:46
 #: templates/admin/advertyra/campaign/change_form.html:50
 msgid "Clicks for"
-msgstr ""
+msgstr "Aantal kliks voor"
