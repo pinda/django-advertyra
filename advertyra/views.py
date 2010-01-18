@@ -11,6 +11,9 @@ from advertyra.utils import clicks_for_ad
 
 def adclick(request, ad_id):
     ad = get_object_or_404(Advertisement, pk=ad_id, visible=True)
+    if not ad.link:
+        return HttpResponseRedirect('/')
+    
     response = HttpResponseRedirect(ad.link)
     key = md5_constructor(str(ad.pk) + ad.title).hexdigest()
 

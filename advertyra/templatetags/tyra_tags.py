@@ -1,4 +1,6 @@
 from django import template
+from django.conf import settings
+from django.utils.safestring import mark_safe
 
 from advertyra.utils import render_placeholder
 
@@ -44,3 +46,52 @@ class PlaceholderNode(template.Node):
         return "<Banner: %s>" % self.name
 
 register.tag('banner', do_placeholder)
+
+@register.tag
+def render_media(parser, token):
+    """
+    Gets form to put products in the cart
+ 
+    Syntax::
+ 
+        {% render_media for [object] [size] %}
+ 
+    Example usage::
+ 
+        {% render_media for product 500x500 %}
+    
+    """
+    try:
+        tag_name, for_name, obj, size = token.split_contents()
+    except ValueError:
+        raise template.TemplateSyntaxError, '%s is used as "{% render_form for <object> %}".' % token.content.split()[0]
+
+    if for_name != "for": raise template.TemplateSyntaxError, 'Second argument must be "for"'
+    return RenderMedia(obj, size)
+
+class RenderMedia(template.Node):
+    """ Render form for object """
+    def __init__(self, obj, size):
+        self.object = template.Variable(obj)
+        self.size = template.Variable(size)
+
+    def render(self, context):
+        try:
+            obj = self.object.resolve(context)
+            size = self.size.resolve(context)
+        except template.VariableDoesNotExist:
+            return ''
+        else:
+            width, height = size.split('x')
+            t = template.loader.get_template('advertyra/includes/media_object.html')
+            context = template.Context({'object': obj,
+                                        'size': size,
+                                        'width': width,
+                                        'height': height,
+                                        'MEDIA_URL': settings.MEDIA_URL })
+            
+            try:
+                rendered = t.render(context)
+            except template.TemplateSyntaxError:
+                return ''
+            else: return mark_safe(rendered)

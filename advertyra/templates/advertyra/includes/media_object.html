@@ -1,0 +1,14 @@
+{% load thumbnail %}
+{% ifequal object.media_type 'flash' %}
+<object width="{{ width }}" height="{{ height }}">
+  <param name="movie" value="{{ object.ad }}">
+  <embed src="{{ MEDIA_URL }}{{ object.ad }}" width="{{ width }}" height="{{ height }}">
+  </embed>
+</object>
+{% endifequal %}
+{% ifequal object.media_type 'gif' %}
+<img src="{{ MEDIA_URL }}{{ object.ad }}" title="{{ object.title }}" alt="{{ object.title }}" />
+{% endifequal %}
+{% ifequal object.media_type 'image' %}
+<img src="{% thumbnail object.ad size autocrop %}" title="{{ object.title }}" alt="{{ object.title }}" />
+{% endifequal %}
