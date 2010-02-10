@@ -87,8 +87,11 @@ def clicks_for_ad(pk, start_date=datetime.datetime.now()):
     end_date = start_date + datetime.timedelta(days=31)
     end_date.replace(day=1)
 
-    # select clicks for this ad grouped by day
-    select_data = {"d": """TO_CHAR(datetime, 'MM/DD/YY')"""}
+    # select clicks for this ad grouped by day depends on database engine
+    if settings.DATABASE_ENGINE == 'sqlite3':
+        select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
+    else:
+        select_data = {"d": """TO_CHAR(datetime, 'MM/DD/YY')"""}
     clicks = Click.objects.filter(ad__pk=pk,
                                   datetime__gte=start_date,
                                   datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
