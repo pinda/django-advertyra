@@ -88,7 +88,7 @@ def clicks_for_ad(pk, start_date=datetime.datetime.now()):
     end_date.replace(day=1)
 
     # select clicks for this ad grouped by day
-    select_data = {"d": """strftime('%%m/%%d/%%Y', datetime)"""}
+    select_data = {"d": """TO_CHAR(datetime, 'MM/DD/YY')"""}
     clicks = Click.objects.filter(ad__pk=pk,
                                   datetime__gte=start_date,
                                   datetime__lte=end_date).extra(select=select_data).values('d').annotate(Count("pk")).order_by()
