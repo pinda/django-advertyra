@@ -28,6 +28,7 @@ class Advertisement(models.Model):
     link = models.URLField(_('link'), blank=True, null=True)
     ad = models.FileField(_('advertisement'), upload_to='tyra/')
     visible = models.BooleanField(_('visible'), default=True)
+    extra = models.TextField(_('extra'), blank=True, help_text=_('optional text to display in your templates'))
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)
 
@@ -47,7 +48,7 @@ class Advertisement(models.Model):
             return 'gif'
         elif file_type in FLASH_FILE_TYPES:
             return 'flash'
-    
+
 class Click(models.Model):
     datetime = models.DateTimeField(_('date'), auto_now_add=True)
 
