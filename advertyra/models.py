@@ -28,7 +28,7 @@ class Advertisement(models.Model):
     link = models.URLField(_('link'), blank=True, null=True)
     ad = models.FileField(_('advertisement'), upload_to='tyra/')
     visible = models.BooleanField(_('visible'), default=True)
-    extra = models.TextField(_('extra'), blank=True, help_text=_('optional text to display in your templates'))
+    extra = models.TextField(_('extra'), blank=True, null=True, help_text=_('optional text to display in your templates'))
 
     place = models.ForeignKey("Placeholder", blank=True, null=True)
 
