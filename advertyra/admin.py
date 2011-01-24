@@ -2,7 +2,7 @@ import datetime
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 
-from advertyra.models import Campaign, Advertisement, Click
+from advertyra.models import Campaign, Advertisement, Click, Placeholder
 from advertyra.forms import AdvertisementForm, CampaignForm
 from advertyra.utils import get_placeholders, clicks_for_ad
 
@@ -70,3 +70,4 @@ class CampaignAdmin(admin.ModelAdmin):
 
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Campaign, CampaignAdmin)
+admin.site.register(Placeholder)

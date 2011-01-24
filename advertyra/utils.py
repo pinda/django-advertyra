@@ -24,7 +24,7 @@ def get_placeholders(request):
     current_placeholders = [(p.title) for p in Placeholder.objects.all()]
 
     # For every template retrieve the placeholders and add to the DB
-    all_positions = []
+    all_positions = set()
     for template in placeholders:
         file = open(template, 'r')
         temp_string = file.read()
@@ -32,11 +32,9 @@ def get_placeholders(request):
 
         for match in re.finditer(banner_re, temp_string):
             title = match.group('title')
-            all_positions.append(title)
-            try:
-                Placeholder.objects.get(title__iexact=title)
-            except Placeholder.DoesNotExist:
-                Placeholder.objects.create(title=title)
+            all_positions.add(title)
+
+            placeholder, created = Placeholder.objects.get_or_create(title__iexact=title)
 
     # Delete any non-existing placeholder
     removable = list(set(current_placeholders).difference(set(all_positions)))
