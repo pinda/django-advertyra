@@ -19,6 +19,7 @@ class Campaign(models.Model):
     class Meta:
         verbose_name = _('Campaign')
         verbose_name_plural = _('Campaigns')
+        ordering = ['start', 'end']
 
     def __unicode__(self):
         return self.title
