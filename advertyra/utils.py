@@ -47,7 +47,7 @@ def render_placeholder(placeholder_name, context, size, template):
         campaign = Campaign.objects.get(Q(place__title__iexact=placeholder_name,
                                         start__lte=datetime.datetime.now()),
                                         Q(end__gte=datetime.datetime.now())| Q(end=None)
-                                        ).order_by('end')[0]
+                                        )
         ads = campaign.ad.all()
     except Campaign.DoesNotExist:
         try:
