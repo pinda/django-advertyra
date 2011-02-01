@@ -48,14 +48,15 @@ def render_placeholder(placeholder_name, context, size, template):
                                            start__lte=datetime.datetime.now()),
                                            Q(end__gte=datetime.datetime.now())| Q(end=None)
                                            )[0]
-        ads = campaign.ad.all()
-    except Campaign.DoesNotExist:
+    except:
         try:
             ad = Advertisement.objects.get(place__title__iexact=placeholder_name, visible=True)
         except Advertisement.DoesNotExist:
             return ''
         else:
             ads = [ad, ]
+    else:
+        ads = campaing.ad.all()
 
     context.update({'ads': ads,
                     'size': size })
