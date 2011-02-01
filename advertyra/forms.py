@@ -76,7 +76,7 @@ class CampaignForm(forms.ModelForm):
         # Check for advertisements
         try:
             Advertisement.objects.get(place=self.cleaned_data['place'],
-                                      end__gt=self.cleaned_data['start'])
+                                      end__gt=self.cleaned_data['start']).exclude(pk=self.instance.pk)
         except:
             pass
         else:
@@ -86,7 +86,7 @@ class CampaignForm(forms.ModelForm):
         # Check for campaigns
         try:
             Campaign.objects.get(place=self.cleaned_data['place'],
-                                 end__gt=self.cleaned_data['start'])
+                                 end__gt=self.cleaned_data['start']).exlude(pk=self.instance.pk)
         except:
             pass
         else:
