@@ -56,7 +56,7 @@ def render_placeholder(placeholder_name, context, size, template):
         else:
             ads = [ad, ]
     else:
-        ads = campaing.ad.all()
+        ads = campaign.ad.all()
 
     context.update({'ads': ads,
                     'size': size })
