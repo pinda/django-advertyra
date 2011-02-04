@@ -28,13 +28,13 @@ def get_placeholders(request):
     for template in placeholders:
         file = open(template, 'r')
         temp_string = file.read()
-        banner_re = r'{% banner (?P<title>[-\w]+).*%}'
+        banner_re = r'{% banner (?P<title>[-\w]+).* %}'
 
         for match in re.finditer(banner_re, temp_string):
             title = match.group('title')
             all_positions.add(title)
 
-            placeholder, created = Placeholder.objects.get_or_create(title__iexact=title)
+            placeholder, created = Placeholder.objects.get_or_create(title=title)
 
     # Delete any non-existing placeholder
     removable = list(set(current_placeholders).difference(set(all_positions)))

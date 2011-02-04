@@ -70,4 +70,4 @@ class CampaignAdmin(admin.ModelAdmin):
 
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Campaign, CampaignAdmin)
-#admin.site.register(Placeholder)
+admin.site.register(Placeholder)
