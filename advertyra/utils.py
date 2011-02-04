@@ -40,7 +40,7 @@ def get_placeholders(request):
     removable = list(set(current_placeholders).difference(set(all_positions)))
 
     for placeholder in removable:
-        Placeholder.objects.get(title__iexact=placeholder).delete()
+        Placeholder.objects.filter(title__iexact=placeholder).delete()
 
 def render_placeholder(placeholder_name, context, size, template):
     try:
