@@ -1,7 +1,9 @@
+import re
 from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
+from advertyra.models import Advertisement
 from advertyra.utils import render_placeholder
 
 register = template.Library()
@@ -51,15 +53,15 @@ register.tag('banner', do_placeholder)
 def render_media(parser, token):
     """
     Gets form to put products in the cart
- 
+
     Syntax::
- 
+
         {% render_media for [object] [size] %}
- 
+
     Example usage::
- 
+
         {% render_media for product 500x500 %}
-    
+
     """
     try:
         tag_name, for_name, obj, size = token.split_contents()
@@ -89,9 +91,47 @@ class RenderMedia(template.Node):
                                         'width': width,
                                         'height': height,
                                         'MEDIA_URL': settings.MEDIA_URL })
-            
+
             try:
                 rendered = t.render(context)
             except template.TemplateSyntaxError:
                 return ''
             else: return mark_safe(rendered)
+
+class RandomAds(template.Node):
+    def __init__(self, limit, var_name):
+        self.limit = limit
+        self.var_name = var_name
+
+    def render(self, context):
+        ad_list = Advertisement.objects.filter(visible=True)[:self.limit]
+        if ad_list and (self.limit == 1):
+            context[self.var_name] = ad_list[0]
+        else:
+            context[self.var_name] = ad_list
+
+        return ''
+
+@register.tag
+def get_random_ads(parser, token):
+    """
+    Return a integer with the total number of profile updates
+
+    Syntax::
+
+        {% get_random_ad [limit] as [var_name] %}
+
+    Example usage::
+
+        {% get_random_ad 10 as ad_list %}
+
+    """
+    try:
+        tag_name, arg = token.contents.split(None, 1)
+    except ValueError:
+        raise template.TemplateSyntaxError, "%s tag requires arguments" % token.contents.split()[0]
+    m = re.search(r'(.*?) as (\w+)', arg)
+    if not m:
+        raise template.TemplateSyntaxError, "%s tag had invalid arguments" % tag_name
+    limit, var_name = m.groups()
+    return RandomAds(limit, var_name)
