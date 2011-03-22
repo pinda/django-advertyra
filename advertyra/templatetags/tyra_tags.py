@@ -104,8 +104,8 @@ class RandomAds(template.Node):
         self.var_name = var_name
 
     def render(self, context):
-        ad_list = Advertisement.objects.filter(visible=True)[:self.limit]
-        if ad_list and (self.limit == 1):
+        ad_list = Advertisement.objects.filter(visible=True).order_by('?')[:int(self.limit)]
+        if ad_list and (int(self.limit) == 1):
             context[self.var_name] = ad_list[0]
         else:
             context[self.var_name] = ad_list
