@@ -1,5 +1,6 @@
 {% extends "admin/change_form.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -44,7 +45,7 @@ $(document).ready(function () {
       <fieldset class="module aligned">
       <div class="form-row title">
         <h1>{% trans 'Clicks for' %}
-        <select id="months" rel="{% url ad_click_by_month object_id 0 %}">
+        <select id="months" rel="{% url "ad_click_by_month" object_id 0 %}">
           {% for month in month_list %}
           <option value="{{ month|date:'m-Y' }}">{{ month|date:'F Y' }}</option>
           {% empty %}

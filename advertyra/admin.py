@@ -23,7 +23,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
         return super(AdvertisementAdmin, self).add_view(request, form_url, extra_context)
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, form_url = '', extra_context=None):
         get_placeholders(request)
 
         click_data = clicks_for_ad(object_id)
@@ -32,7 +32,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
         extra_context = {'clicks': click_data['clicks'], 'start_date': click_data['start'], 'end_date': click_data['end'], 'month_list': month_list }
 
-        return super(AdvertisementAdmin, self).change_view(request, object_id, extra_context)
+        return super(AdvertisementAdmin, self).change_view(request, object_id, form_url, extra_context)
 
 class CampaignAdmin(admin.ModelAdmin):
     list_display = ('title', 'place', 'start', 'end')
@@ -51,7 +51,7 @@ class CampaignAdmin(admin.ModelAdmin):
 
         return super(CampaignAdmin, self).add_view(request, form_url, extra_context)
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, form_url='', extra_context=None):
         get_placeholders(request)
 
         # Determine start and end date
@@ -66,7 +66,7 @@ class CampaignAdmin(admin.ModelAdmin):
                          'start_date': start_date,
                          'end_date': end_date }
 
-        return super(CampaignAdmin, self).change_view(request, object_id, extra_context)
+        return super(CampaignAdmin, self).change_view(request, object_id, form_url, extra_context)
 
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Campaign, CampaignAdmin)
