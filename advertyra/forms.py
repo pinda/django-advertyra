@@ -1,5 +1,6 @@
 import datetime
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from advertyra.models import Advertisement, Campaign, Placeholder
@@ -38,6 +39,8 @@ class AdvertisementForm(forms.ModelForm):
         if self.instance.place:
             place_list.append([self.instance.place.pk, self.instance.place.title])
             place_list.sort()
+
+        self.fields['ad'].help_text = getattr(settings, 'ADVERTYRA_HELP_TEXT', '')
 
         self.fields['place'].choices = place_list
 
