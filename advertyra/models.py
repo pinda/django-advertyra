@@ -36,6 +36,7 @@ class Advertisement(models.Model):
     class Meta:
         verbose_name = _('Advertisement')
         verbose_name_plural = _('Advertisements')
+        ordering = ['title',]
 
     def __unicode__(self):
         return self.title
